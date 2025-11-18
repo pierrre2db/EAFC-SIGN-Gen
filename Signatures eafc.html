@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Signature Professionnelle</title>
+    <!-- Chargement de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Gris clair */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Aligner en haut pour laisser de la place */
+            min-height: 100vh;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff; /* Blanc */
+            border-radius: 1rem; /* Bords arrondis */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Ombre douce */
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 1000px; /* Largeur maximale pour le contenu */
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+            }
+        }
+        .input-section, .preview-section {
+            flex: 1;
+        }
+        .input-group label {
+            font-weight: 500;
+            color: #374151; /* Gris foncé */
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .input-group input[type="text"],
+        .input-group input[type="email"],
+        .input-group input[type="url"],
+        .input-group input[type="number"] { /* Ajout du type number */
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db; /* Gris clair */
+            border-radius: 0.5rem; /* Bords arrondis */
+            font-size: 1rem;
+            color: #4b5563; /* Gris */
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .input-group input[type="text"]:focus,
+        .input-group input[type="email"]:focus,
+        .input-group input[type="url"]:focus,
+        .input-group input[type="number"]:focus { /* Ajout du type number */
+            outline: none;
+            border-color: #3b82f6; /* Bleu */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* Ombre bleue */
+        }
+        .preview-area {
+            border: 1px dashed #d1d5db; /* Bordure en pointillés */
+            background-color: #f9fafb; /* Très gris clair */
+            padding: 1.5rem;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            overflow-x: auto; /* Permet le défilement horizontal si la signature est trop large */
+            border-radius: 0.5rem;
+        }
+        .signature-content {
+            font-size: 0.9rem;
+            color: #333;
+            line-height: 1.4;
+        }
+        .signature-content a {
+            color: #1a73e8; /* Bleu de lien */
+            text-decoration: none;
+        }
+        .signature-content a:hover {
+            text-decoration: underline;
+        }
+        .signature-content .name {
+            font-weight: 600;
+            color: #1f2937; /* Noir presque */
+            font-size: 1.1rem;
+        }
+        .signature-content .title {
+            font-weight: 500;
+            color: #4b5563; /* Gris */
+        }
+        .signature-content .company {
+            font-weight: 500;
+            color: #6b7280; /* Gris plus clair */
+        }
+        .signature-content .contact-info {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        .signature-content .social-link-item { /* Nouveau style pour aligner icône et texte */
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            margin-right: 10px; /* Espace entre les liens sociaux */
+        }
+        .signature-content .social-link-item img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px; /* Espace entre l'icône et le texte */
+            vertical-align: middle;
+            border-radius: 3px;
+        }
+        .signature-content .social-link-item span {
+            color: #1a73e8; /* Couleur du texte du lien */
+            font-size: 13px;
+        }
+        .copy-button {
+            background-color: #2563eb; /* Bleu foncé */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            border: none;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .copy-button:hover {
+            background-color: #1d4ed8; /* Bleu plus foncé au survol */
+        }
+        .message-box {
+            background-color: #d1fae5; /* Vert clair */
+            color: #065f46; /* Vert foncé */
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 500;
+            display: none; /* Caché par défaut */
+        }
+        .credit-text {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Section des entrées utilisateur -->
+        <div class="input-section">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Informations pour la signature</h2>
+            <div class="space-y-4">
+                <div class="input-group">
+                    <label for="fullName">Nom complet</label>
+                    <input type="text" id="fullName" placeholder="Ex: Jean Dupont">
+                </div>
+                <div class="input-group">
+                    <label for="title">Titre / Poste</label>
+                    <input type="text" id="title" placeholder="Ex: Développeur Senior">
+                </div>
+                <div class="input-group">
+                    <label for="department">Département</label>
+                    <input type="text" id="department" placeholder="Ex: R&D">
+                </div>
+                <div class="input-group">
+                    <label for="companyName">Nom de l'entreprise</label>
+                    <input type="text" id="companyName" placeholder="Ex: Ma Super Entreprise">
+                </div>
+                <div class="input-group">
+                    <label for="phone">Téléphone</label>
+                    <input type="text" id="phone" placeholder="Ex: +32 123 45 67 89">
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Ex: jean.dupont@entreprise.com">
+                </div>
+                <div class="input-group">
+                    <label for="website">Site Web (URL)</label>
+                    <input type="url" id="website" value="https://www.eafc-tic.be" placeholder="Ex: https://www.entreprise.com">
+                </div>
+                <div class="input-group">
+                    <label for="linkedin">LinkedIn (URL)</label>
+                    <input type="url" id="linkedin" value="https://www.linkedin.com/company/eafc-tic/jobs/?viewAsMember=true" placeholder="Ex: https://linkedin.com/in/jeandupont">
+                </div>
+                <div class="input-group">
+                    <label for="twitter">Twitter (URL)</label>
+                    <input type="url" id="twitter" placeholder="Ex: https://twitter.com/jeandupont">
+                </div>
+                <div class="input-group">
+                    <label for="facebook">Facebook (URL)</label>
+                    <input type="url" id="facebook" placeholder="Ex: https://facebook.com/jeandupont">
+                </div>
+                <div class="input-group">
+                    <label for="logoUrl">URL du Logo (facultatif)</label>
+                    <input type="url" id="logoUrl" value="https://ci3.googleusercontent.com/mail-sig/AIorK4xWQWv1pEEWj7GYNmTIEEsKVWp_BaG0L8Yx_Dl9qHVUtym_p9kgYGA1RV5ad2U0XqOgHL3-hK_FeAKA" placeholder="Ex: https://www.entreprise.com/logo.png">
+                </div>
+                <div class="input-group">
+                    <label for="logoWidth">Largeur du Logo (px)</label>
+                    <input type="number" id="logoWidth" value="100" min="10" max="300" placeholder="Ex: 100">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section de prévisualisation et de copie -->
+        <div class="preview-section">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Prévisualisation de la signature</h2>
+            <div class="preview-area">
+                <div id="signaturePreview" class="signature-content">
+                    <!-- La signature sera générée ici -->
+                </div>
+            </div>
+            <button id="copyButton" class="copy-button">Copier la signature HTML</button>
+            <div id="messageBox" class="message-box">
+                Signature copiée dans le presse-papiers !
+            </div>
+        </div>
+    </div>
+
+    <div class="credit-text">
+        Code généré par Pierre de Dobbeleer. 2025
+    </div>
+
+    <script>
+        // Références aux éléments du DOM
+        const fullNameInput = document.getElementById('fullName');
+        const titleInput = document.getElementById('title');
+        const departmentInput = document.getElementById('department');
+        const companyNameInput = document.getElementById('companyName');
+        const phoneInput = document.getElementById('phone');
+        const emailInput = document.getElementById('email');
+        const websiteInput = document.getElementById('website');
+        const linkedinInput = document.getElementById('linkedin');
+        const twitterInput = document.getElementById('twitter');
+        const facebookInput = document.getElementById('facebook');
+        const logoUrlInput = document.getElementById('logoUrl');
+        const logoWidthInput = document.getElementById('logoWidth');
+        const signaturePreview = document.getElementById('signaturePreview');
+        const copyButton = document.getElementById('copyButton');
+        const messageBox = document.getElementById('messageBox');
+
+        // Fonction pour générer la signature HTML
+        function generateSignature() {
+            const fullName = fullNameInput.value;
+            const title = titleInput.value;
+            const department = departmentInput.value;
+            const companyName = companyNameInput.value;
+            const phone = phoneInput.value;
+            const email = emailInput.value;
+            const website = websiteInput.value;
+            const linkedin = linkedinInput.value;
+            const twitter = twitterInput.value;
+            const facebook = facebookInput.value;
+            const logoUrl = logoUrlInput.value;
+            // Assurez-vous que la valeur est un nombre valide, sinon utilisez une valeur par défaut
+            const logoWidthValue = logoWidthInput.value ? parseInt(logoWidthInput.value) : 100;
+            const logoWidthStyle = `${logoWidthValue}px`;
+
+            let signatureHtml = `
+                <div style="font-family: 'Inter', sans-serif; font-size: 14px; color: #333; line-height: 1.4;">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width: auto;">
+                        <tr>
+            `;
+
+            // Ajout du logo si une URL est fournie
+            if (logoUrl) {
+                signatureHtml += `
+                            <td style="padding-right: 10px; vertical-align: top;">
+                                <img src="${logoUrl}" alt="${companyName || 'Logo'}" width="${logoWidthValue}" style="width: ${logoWidthStyle}; max-width: 100%; height: auto; display: block; border-radius: 5px;">
+                            </td>
+                `;
+            }
+
+            signatureHtml += `
+                            <td style="vertical-align: top;">
+            `;
+
+            // Nom complet
+            if (fullName) {
+                signatureHtml += `<p style="margin: 0; padding: 0;"><strong style="font-size: 16px; color: #1f2937;">${fullName}</strong></p>`;
+            }
+            // Titre
+            if (title) {
+                signatureHtml += `<p style="margin: 0; padding: 0; color: #4b5563;">${title}</p>`;
+            }
+            // Département
+            if (department) {
+                signatureHtml += `<p style="margin: 0; padding: 0; color: #4b5563;">${department}</p>`;
+            }
+            // Nom de l'entreprise
+            if (companyName) {
+                signatureHtml += `<p style="margin: 0; padding: 0; color: #6b7280;">${companyName}</p>`;
+            }
+
+            // Informations de contact
+            signatureHtml += `<p style="margin: 10px 0 0 0; padding: 0; font-size: 13px; color: #6b7280;">`;
+            if (phone) {
+                signatureHtml += `T: <a href="tel:${phone}" style="color: #1a73e8; text-decoration: none;">${phone}</a><br>`;
+            }
+            if (email) {
+                signatureHtml += `E: <a href="mailto:${email}" style="color: #1a73e8; text-decoration: none;">${email}</a><br>`;
+            }
+            if (website) {
+                signatureHtml += `W: <a href="${website}" target="_blank" style="color: #1a73e8; text-decoration: none;">${website.replace(/(^\w+:|^)\/\//, '')}</a><br>`; // Supprime http(s):// pour l'affichage
+            }
+            signatureHtml += `</p>`;
+
+            // Liens sociaux
+            let socialLinksHtml = '';
+            if (linkedin || twitter || facebook) {
+                socialLinksHtml += `<p style="margin: 8px 0 0 0; padding: 0;">`;
+                if (linkedin) {
+                    socialLinksHtml += `<a href="${linkedin}" target="_blank" class="social-link-item">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/LinkedIn_logo_initials.png/640px-LinkedIn_logo_initials.png" alt="LinkedIn">
+                                            <span>LinkedIn</span>
+                                        </a>`;
+                }
+                if (twitter) {
+                    socialLinksHtml += `<a href="${twitter}" target="_blank" class="social-link-item">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Logo_of_Twitter.svg/512px-Logo_of_Twitter.svg.png" alt="Twitter">
+                                            <span>Twitter</span>
+                                        </a>`;
+                }
+                if (facebook) {
+                    socialLinksHtml += `<a href="${facebook}" target="_blank" class="social-link-item">
+                                            <img src="https://cdn-icons-png.flaticon.com/512/174/174848.png" alt="Facebook">
+                                            <span>Facebook</span>
+                                        </a>`;
+                }
+                socialLinksHtml += `</p>`;
+            }
+            signatureHtml += socialLinksHtml;
+
+            signatureHtml += `
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+            signaturePreview.innerHTML = signatureHtml;
+        }
+
+        // Ajout d'écouteurs d'événements pour mettre à jour la signature en temps réel
+        [
+            fullNameInput, titleInput, departmentInput, companyNameInput,
+            phoneInput, emailInput, websiteInput, linkedinInput,
+            twitterInput, facebookInput, logoUrlInput, logoWidthInput
+        ].forEach(input => {
+            input.addEventListener('input', generateSignature);
+        });
+
+        // Fonction pour copier le contenu HTML de la signature
+        copyButton.addEventListener('click', () => {
+            const range = document.createRange();
+            range.selectNode(signaturePreview);
+            window.getSelection().removeAllRanges(); // Efface toute sélection existante
+            window.getSelection().addRange(range); // Sélectionne le contenu de la signature
+
+            try {
+                // Utilise document.execCommand('copy') car navigator.clipboard.writeText() peut ne pas fonctionner dans un iframe
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    messageBox.textContent = 'Signature copiée dans le presse-papiers !';
+                    messageBox.style.display = 'block';
+                    setTimeout(() => {
+                        messageBox.style.display = 'none';
+                    }, 3000); // Cache le message après 3 secondes
+                } else {
+                    messageBox.textContent = 'Échec de la copie. Veuillez copier manuellement.';
+                    messageBox.style.backgroundColor = '#fee2e2'; /* Rouge clair */
+                    messageBox.style.color = '#991b1b'; /* Rouge foncé */
+                    messageBox.style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Erreur lors de la copie : ', err);
+                messageBox.textContent = 'Échec de la copie. Veuillez copier manuellement.';
+                messageBox.style.backgroundColor = '#fee2e2';
+                messageBox.style.color = '#991b1b';
+                messageBox.style.display = 'block';
+            } finally {
+                window.getSelection().removeAllRanges(); // Désélectionne le contenu
+            }
+        });
+
+        // Générer la signature initiale au chargement de la page
+        document.addEventListener('DOMContentLoaded', generateSignature);
+    </script>
+</body>
+</html>
