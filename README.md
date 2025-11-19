@@ -1,8 +1,12 @@
 # 📧 EAFC-SIGN-Gen
 
+![Version](https://img.shields.io/badge/version-2.1.0-blue)
+
 **Générateur de Signature Email Professionnel** - 100% Compatible Gmail & Outlook
 
 Un outil moderne et facile à utiliser pour créer des signatures email professionnelles optimisées pour Gmail, Outlook et tous les principaux clients email.
+
+🔗 **Accès direct** : [https://pierrre2db.github.io/EAFC-SIGN-Gen/](https://pierrre2db.github.io/EAFC-SIGN-Gen/)
 
 ---
 
